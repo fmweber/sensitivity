@@ -10,7 +10,7 @@
 \description{
   
   \code{morris} implements the Morris's elementary effects screening
-  method (Morris 1992). This method, based on design of experiments,
+  method (Morris 1991). This method, based on design of experiments,
   allows to identify the few important factors at a cost of \eqn{r
   \times (p+1)}{r * (p + 1)} simulations (where \eqn{p}{p} is the number
   of factors). This implementation includes some improvements of the
@@ -45,7 +45,7 @@ morris(model = NULL, factors, r, design, binf = 0, bsup = 1,
   \item{design}{a list specifying the design type and its
     parameters:
     \itemize{
-      \item \code{type = "oat"} for Morris's OAT design (Morris 1992),
+      \item \code{type = "oat"} for Morris's OAT design (Morris 1991),
       with the parameters:
       \itemize{
 	\item \code{levels} : either an integer specifying the number of
@@ -60,7 +60,7 @@ morris(model = NULL, factors, r, design, binf = 0, bsup = 1,
 	\eqn{\texttt{levels} / 2}{levels / 2}.
       }
       \item \code{type = "simplex"} for simplex-based design (Pujol
-      2008), with the parameter:
+      2009), with the parameter:
       \itemize{
 	\item \code{scale.factor} : a numeric value, the homothety factor of
 	the (isometric) simplexes. Edges equal one with a scale factor
@@ -175,21 +175,21 @@ sigma <- apply(x$ee, 3, function(M){
 
   If \code{x$y} is a three-dimensional array:
   \preformatted{
-mu <- lapply(1:dim(x$ee)[4], function(i){
+mu <- sapply(1:dim(x$ee)[4], function(i){
   apply(x$ee[, , , i, drop = FALSE], 3, function(M){
     apply(M, 2, mean)
   })
-})
-mu.star <- lapply(1:dim(x$ee)[4], function(i){
+}, simplify = "array")
+mu.star <- sapply(1:dim(x$ee)[4], function(i){
   apply(abs(x$ee)[, , , i, drop = FALSE], 3, function(M){
     apply(M, 2, mean)
   })
-})
-sigma <- lapply(1:dim(x$ee)[4], function(i){
+}, simplify = "array")
+sigma <- sapply(1:dim(x$ee)[4], function(i){
   apply(x$ee[, , , i, drop = FALSE], 3, function(M){
     apply(M, 2, sd)
   })
-})
+}, simplify = "array")
   }
 
   Contrary to earlier versions of the function, the scaling of factors isn't 
