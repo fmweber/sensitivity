@@ -1,4 +1,4 @@
-context("Comparison of soboljansen() to original version")
+context("Test of soboljansen()")
 
 # # Original call:
 # library(sensitivity)
@@ -18,28 +18,38 @@ X1 <- data.frame(matrix(runif(8 * n), nrow = n))
 X2 <- data.frame(matrix(runif(8 * n), nrow = n))
 x <- soboljansen(model = sobol.fun, X1, X2, nboot = 100)
 
-test_that("Calls are equal", {
+test_that("Calls are equal to original version", {
   expect_equal(x$call, x_orig$call)
 })
 
-test_that("Random matrices (X1, X2, X) are equal", {
+test_that("Random matrices (X1, X2, X) are equal to original version", {
   expect_equal(x$X1, x_orig$X1)
   expect_equal(x$X2, x_orig$X2)
   expect_equal(x$X, x_orig$X)
 })
 
-test_that("Response vectors (y) are equal", {
+test_that("Response vectors (y) are equal to original version", {
   expect_equal(x$y, x_orig$y)
 })
 
-test_that("SA indices (S and T) are equal", {
+test_that("SA indices (S and T) are equal to original version", {
   expect_equal(x$S, x_orig$S)
   expect_equal(x$T, x_orig$T)
 })
 
-test_that("VCEs (V) are equal", {
+test_that("VCEs (V) are equal to original version", {
   expect_equal(x$V, x_orig$V)
 })
+
+sobol.fun_1par <- function(X){
+  a <- c(0, 1, 4.5, 9, 99, 99, 99, 99)
+  y <- 1
+  X <- cbind(X, -0.4, -0.8, 0.5, 0.2, -0.1, 0.6, 0.3)
+  for (j in 1:8) {
+    y <- y * (abs(4 * X[, j] - 2) + a[j]) / (1 + a[j])
+  }
+  y
+}
 
 test_that("Models with matrix output work correctly", {
   # A model function returning a matrix of two columns:
@@ -67,6 +77,18 @@ test_that("Models with matrix output work correctly", {
                check.attributes = FALSE)
   expect_equal(drop(x_onecol$T), x_orig$T[, "original"], 
                check.attributes = FALSE)
+  
+  # A model function with only one parameter and returning a matrix of only 
+  # one column:
+  sobol.fun_onecol_onepar <- function(X){
+    res_vector <- sobol.fun_1par(X)
+    matrix(res_vector)
+  }
+  set.seed(2305)
+  X1_onepar <- data.frame(X1 = matrix(runif(1 * n), nrow = n))
+  X2_onepar <- data.frame(X1 = matrix(runif(1 * n), nrow = n))
+  x_onecol_onepar <- soboljansen(model = sobol.fun_onecol_onepar, 
+                                 X1_onepar, X2_onepar)
   
   # Trying to perform a bootstrap should fail:
   expect_error(soboljansen(model = sobol.fun_matrix, X1, X2, nboot = 100),
@@ -119,6 +141,20 @@ test_that("Models with array output work correctly", {
                check.attributes = FALSE)
   expect_equal(x_onecol_onedim3$T[, 1, 1], x_orig$T[, "original"], 
                check.attributes = FALSE)
+  
+  # A model function with only one parameter and returning a 3-dimensional 
+  # array with dimension lengths c(., 1, 1):
+  sobol.fun_onecol_onedim3_onepar <- function(X){
+    res_vector <- sobol.fun_1par(X)
+    res_matrix <- matrix(res_vector)
+    array(data = res_matrix, dim = c(length(res_vector), 1, 1))
+  }
+  set.seed(2305)
+  X1_onepar <- data.frame(X1 = matrix(runif(1 * n), nrow = n))
+  X2_onepar <- data.frame(X1 = matrix(runif(1 * n), nrow = n))
+  x_onecol_onedim3_onepar <- soboljansen(model = 
+                                           sobol.fun_onecol_onedim3_onepar, 
+                                         X1_onepar, X2_onepar)
   
   # A model function returning an array with more than 3 dimensions should
   # throw an error:
