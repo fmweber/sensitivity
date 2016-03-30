@@ -59,6 +59,9 @@ morris <- function(model = NULL, factors, r, design, binf = 0, bsup = 1, scale =
     }
   } else if (design$type == "simplex") {
     # simplex-based design
+    if (! "scale.factor" %in% names(design)) {
+      stop("argument \'design$scale.factor\' not found")
+    }
     h <- design$scale.factor
   } else {
     stop("invalid argument design$type, waiting for \"oat\" or \"simplex\"")
