@@ -50,8 +50,10 @@ estim.soboljansen <- function(data, i = NULL) {
       })
       SumSq <- apply(d_array, 3, function(d_matrix){
         matrix(c(
-          colSums((d_matrix[, 2] - d_matrix[, - c(1, 2)])^2) / (2 * n - 1),
-          colSums((d_matrix[, 1] - d_matrix[, - c(1, 2)])^2) / (2 * n - 1)), 
+          colSums((d_matrix[, 2] - d_matrix[, -c(1, 2), drop = FALSE])^2) / 
+            (2 * n - 1),
+          colSums((d_matrix[, 1] - d_matrix[, -c(1, 2), drop = FALSE])^2) / 
+            (2 * n - 1)), 
           ncol = 2)
       })
       V_rep <- matrix(rep(V, each = p), ncol = dim(d_array)[3], 

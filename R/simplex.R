@@ -37,7 +37,11 @@ plane.rot <- function(p, i, j, theta) {
 
 random.simplexes <- function(p, r, min = rep(0, p), max = rep(1, p), h = 0.25) {
 # generates r random simplexes
-
+  
+  # Check if p >= 2:
+  if(p < 2){
+    stop("At least 2 factors have to be analyzed.")
+  }
   X <- matrix(nrow = r * (p + 1), ncol = p)
   
   # initial random rotation matrix

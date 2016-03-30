@@ -58,6 +58,11 @@ ee.oat <- function(X, y) {
     }
     ee <- vapply(1:r, one_i_matrix, 
                  FUN.VALUE = matrix(0, nrow = p, ncol = ncol(y)))
+    # Special case handling for p == 1 and ncol(y) == 1 (in this case, "ee" is
+    # a vector of length "r"):
+    if(p == 1 && ncol(y) == 1){
+      ee <- array(ee, dim = c(r, 1, 1))
+    }
     # Transpose "ee" (an array of dimensions c(p, ncol(y), r)) to an array of
     # dimensions c(r, p, ncol(y)) (for better consistency with the standard 
     # case that "class(y) == "numeric""):
@@ -89,10 +94,19 @@ ee.oat <- function(X, y) {
       # "ee_per_3rd_dim" is now an array of dimensions 
       # c(p, dim(y)[2], dim(y)[3]). Assign the corresponding names for the 
       # third dimension:
-      dimnames(ee_per_3rd_dim)[[3]] <- dimnames(y)[[3]]
+      if(is.null(dimnames(ee_per_3rd_dim))){
+        dimnames(ee_per_3rd_dim) <- dimnames(y)
+      } else{
+        dimnames(ee_per_3rd_dim)[[3]] <- dimnames(y)[[3]]
+      }
       return(ee_per_3rd_dim)
     }
     ee <- sapply(1:r, one_i_array, simplify = "array")
+    # Special case handling if "ee" has been dropped to a vector:
+    if(class(ee) == "numeric"){
+      ee <- array(ee, dim = c(p, dim(y)[2], dim(y)[3], r))
+      dimnames(ee) <- list(NULL, dimnames(y)[[2]], dimnames(y)[[3]], NULL)
+    }
     # "ee" is an array of dimensions c(p, dim(y)[2], dim(y)[3], r), so it is
     # transposed to an array of dimensions c(r, p, dim(y)[2], dim(y)[3]):
     ee <- aperm(ee, perm = c(4, 1, 2, 3))
