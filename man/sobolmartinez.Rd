@@ -78,12 +78,11 @@ even if Sobol' indices are no more rigorous variance-based sensitivity
 indices if missing values are present. In this case, a warning is displayed.
 
 This version of \code{sobolmartinez} also supports matrices and 
-three-dimensional arrays as output of \code{model}. However, bootstrapping is 
-not supported for these types of model output and unlike in the standard case 
-where \code{y} is a numeric vector, \code{S} and \code{T} don't contain 
-confidence intervals for the point estimates. Also, if the model output is a 
-matrix or an array, \code{V}, \code{S} and \code{T} are matrices respectively 
-arrays with dimensions corresponding to those of \code{y}.
+three-dimensional arrays as output of \code{model}. In those cases, \code{V}, 
+\code{S} and \code{T} are matrices respectively arrays with dimensions 
+corresponding to those of \code{y}. However, if the model output is a matrix or 
+an array, confidence intervals are only given if \code{nboot > 0} (for vector
+output, confidence intervals are also given for \code{nboot == 0}).
 }
 
 \references{

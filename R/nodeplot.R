@@ -39,7 +39,13 @@ nodeplot <- function(x, xlim = NULL, ylim = NULL, labels = TRUE,
   # bias
 
   if ("bias" %in% dimnames(x)[[2]]) {
-    xx <- x[["original"]] - x[["bias"]]
+    if(is.null(y_col) && is.null(y_dim3)){
+      xx <- x[["original"]] - x[["bias"]]
+    } else if(!is.null(y_col) && is.null(y_dim3)){
+      xx <- x[, "original", y_col] - x[, "bias", y_col]
+    } else if(!is.null(y_col) && !is.null(y_dim3)){
+      xx <- x[, "original", y_col, y_dim3] - x[, "bias", y_col, y_dim3]
+    }
   } else {
     if(is.null(y_col) && is.null(y_dim3)){
       xx <- x[["original"]]
@@ -53,8 +59,18 @@ nodeplot <- function(x, xlim = NULL, ylim = NULL, labels = TRUE,
   # confidence intervals
 
   if (("min. c.i." %in% dimnames(x)[[2]]) & "max. c.i." %in% dimnames(x)[[2]]) {
+    if(is.null(y_col) && is.null(y_dim3)){
+      min_ci <- x[["min. c.i."]]
+      max_ci <- x[["max. c.i."]]
+    } else if(!is.null(y_col) && is.null(y_dim3)){
+      min_ci <- x[, "min. c.i.", y_col]
+      max_ci <- x[, "max. c.i.", y_col]
+    } else if(!is.null(y_col) && !is.null(y_dim3)){
+      min_ci <- x[, "min. c.i.", y_col, y_dim3]
+      max_ci <- x[, "max. c.i.", y_col, y_dim3]
+    }
     for (i in 1 : n) {
-      lines(c(at[i], at[i]), c(x[["min. c.i."]][i], x[["max. c.i."]][i]),
+      lines(c(at[i], at[i]), c(min_ci[i], max_ci[i]),
             col = col)
     }
   }

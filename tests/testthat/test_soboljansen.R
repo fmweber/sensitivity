@@ -89,10 +89,6 @@ test_that("Models with matrix output work correctly", {
   X2_onepar <- data.frame(X1 = matrix(runif(1 * n), nrow = n))
   x_onecol_onepar <- soboljansen(model = sobol.fun_onecol_onepar, 
                                  X1_onepar, X2_onepar)
-  
-  # Trying to perform a bootstrap should fail:
-  expect_error(soboljansen(model = sobol.fun_matrix, X1, X2, nboot = 100),
-               "Bootstrapping not supported if model output is a matrix")
 })
 
 test_that("Models with array output work correctly", {
@@ -169,8 +165,4 @@ test_that("Models with array output work correctly", {
   
   # A model function returning a list should throw an error:
   expect_error(soboljansen(model = function(X) list(sobol.fun(X)), X1, X2))
-  
-  # Trying to perform a bootstrap should fail:
-  expect_error(soboljansen(model = sobol.fun_array, X1, X2, nboot = 100),
-               "Bootstrapping not supported if model output is an array")
 })
