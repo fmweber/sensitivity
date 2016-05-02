@@ -10,7 +10,7 @@ tell <- function(x, y = NULL, ...)
   UseMethod("tell")
 
 
-response <- function(x, loop = FALSE, ...) {
+response <- function(x, loop = FALSE, other_types_allowed = FALSE, ...) {
   id <- deparse(substitute(x))
   
   if (class(x$model) == "function") {
@@ -49,13 +49,20 @@ response <- function(x, loop = FALSE, ...) {
     stop("The model isn't a function or does not have a predict method")
   }
   
-  if (!class(y)[1] %in% c("numeric", "matrix", "array") ||
-      (is.array(y) && typeof(y) == "list")) {
-    y <- as.numeric(y)
-    warning("Conversion of the response to numeric")
-  } else if(class(y) == "array" && length(dim(y)) > 3){
-    stop("If the model returns an array, it must not have more ",
-         "than 3 dimensions")
+  if(other_types_allowed){
+    if (!class(y)[1] %in% c("numeric", "matrix", "array") ||
+        (is.array(y) && typeof(y) == "list")) {
+      y <- as.numeric(y)
+      warning("Conversion of the response to numeric")
+    } else if(class(y) == "array" && length(dim(y)) > 3){
+      stop("If the model returns an array, it must not have more ",
+           "than 3 dimensions")
+    }
+  } else{
+    if (class(y) != "numeric") {
+      y <- as.numeric(y)
+      warning("Conversion of the response to numeric")
+    }
   }
   
   # Assign column names resp. dimnames if not existing:

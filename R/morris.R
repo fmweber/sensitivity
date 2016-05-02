@@ -103,7 +103,7 @@ morris <- function(model = NULL, factors, r, design, binf = 0, bsup = 1, scale =
 
   # computing the response if the model is given
   if (!is.null(x$model)) {
-    response(x, ...)
+    response(x, other_types_allowed = TRUE, ...)
     tell(x)
   }
    

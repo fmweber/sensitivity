@@ -20,7 +20,7 @@ soboljansen <- function(model = NULL, X1, X2, nboot = 0, conf = 0.95, ...) {
   class(x) <- "soboljansen"
   
   if (!is.null(x$model)) {
-    response(x, ...)
+    response(x, other_types_allowed = TRUE, ...)
     tell(x)
   }
   
