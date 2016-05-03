@@ -20,7 +20,7 @@
 
 \usage{
 morris(model = NULL, factors, r, design, binf = 0, bsup = 1,
-       scale = FALSE, \dots)
+       scale = TRUE, \dots)
 \method{tell}{morris}(x, y = NULL, ...)
 \method{print}{morris}(x, ...)
 \method{plot}{morris}(x, identify = FALSE, atpen = FALSE, y_col = NULL, 
@@ -192,9 +192,8 @@ sigma <- sapply(1:dim(x$ee)[4], function(i){
 }, simplify = "array")
   }
 
-  Contrary to earlier versions of the function, the scaling of factors isn't 
-  forced by default. Although, it is highly recommended to use the function with
-  the argument \code{scale = TRUE} to avoid an uncorrect interpretation of factors that
+  It is highly recommended to use the function with the argument 
+  \code{scale = TRUE} to avoid an uncorrect interpretation of factors that
   would have different orders of magnitude.
 }
 

@@ -16,7 +16,7 @@ ind.rep <- function(i, p) {
 }
 
 
-morris <- function(model = NULL, factors, r, design, binf = 0, bsup = 1, scale = FALSE, ...) {
+morris <- function(model = NULL, factors, r, design, binf = 0, bsup = 1, scale = TRUE, ...) {
   
   # argument checking: factor number and names
   if (is.character(factors)) {
